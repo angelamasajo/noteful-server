@@ -4,7 +4,7 @@ const xss = require('xss')
 const logger = require('../logger')
 const FoldersService = require('./folders-service')
 
-const articlesRouter = express.Router()
+const foldersRouter = express.Router()
 const jsonParser = express.json()
 
 const serializeFolder = folder => ({
@@ -15,7 +15,7 @@ const serializeFolder = folder => ({
 
 foldersRouter
   .route('/')
-  .get((res, res, next) => {
+  .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     FoldersService.getAllFolders(knexInstance)
       .then(folders => {
@@ -24,5 +24,25 @@ foldersRouter
       .catch(next)
   })
 
-
-module.exports = articlesRouter
+foldersRouter
+  .route('/:folderId')
+  .all((req, res, next) => {
+    FoldersService.getById(
+      req.app.get('db'),
+      req.params.folderId
+    )
+      .then(folder => {
+        if (!folder) {
+          return res.status(400).json({
+            error: { message: `Folder doesn't exist` }
+          })
+        }
+        res.folder = folder
+        next()
+      })
+      .catch(next)
+  })
+  .get((req, res, next) => {
+    res.json(serializeFolder(res.folder))
+  })
+module.exports = foldersRouter

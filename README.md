@@ -1,4 +1,4 @@
-# Bookmarks Server Assignment
+# Noteful Server Assignment
 
-This is bookmark server project
+This is the noteful server project
 

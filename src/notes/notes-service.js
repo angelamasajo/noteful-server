@@ -17,7 +17,7 @@ const NotesService = {
       .where({ id })
       .delete()
   },
-  insertNote(knex, newFolder) {
+  insertNote(knex, newNote) {
     return knex
       .insert(newNote)
       .into('notes')
